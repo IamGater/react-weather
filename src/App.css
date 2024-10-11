@@ -1,0 +1,45 @@
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.input {
+  height: 50px;
+  border-radius: 10px;
+  font-size: 25px;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 90px;
+  margin-top: 60px;
+  margin-bottom: 0px;
+}
+
+.subtitle {
+  font-size: 30px;
+}
+
+.btn {
+  padding: 10px 15px;
+  font-size: 30px;
+  border-radius: 5px;
+  background-color: rgb(76, 102, 107);
+  color: white;
+  border: none;
+  margin: 10px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+.btn:hover {
+  background-color: rgb(205, 205, 134);
+}
+.weather {
+  font-size: 25px;
+}
+.weather__wrapper {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;
+}
