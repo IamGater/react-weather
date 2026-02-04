@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const Form = ({ weather, apiKey }) => {
+const Form = ({ weather, apiKey, loading }) => {
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef(null);
   const timer = useRef(null);
@@ -17,6 +18,7 @@ const Form = ({ weather, apiKey }) => {
 
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(async () => {
+      setSuggestionsLoading(true);
       try {
         const q = encodeURIComponent(query.trim());
         const res = await fetch(
@@ -37,6 +39,8 @@ const Form = ({ weather, apiKey }) => {
         setActiveIndex(-1);
       } catch (err) {
         setSuggestions([]);
+      } finally {
+        setSuggestionsLoading(false);
       }
     }, 300);
 
@@ -83,26 +87,30 @@ const Form = ({ weather, apiKey }) => {
           onBlur={() => setTimeout(() => setVisible(false), 120)}
         />
 
-        {visible && suggestions.length > 0 && (
+        {visible && (suggestions.length > 0 || suggestionsLoading) && (
           <ul className="suggestions" role="listbox">
-            {suggestions.map((s, idx) => (
-              <li
-                key={s.id}
-                role="option"
-                aria-selected={activeIndex === idx}
-                className={
-                  "suggestion" + (activeIndex === idx ? " active" : "")
-                }
-                onMouseDown={(ev) => ev.preventDefault()}
-                onClick={() => handleSelect(s.label)}
-              >
-                {s.label}
-              </li>
-            ))}
+            {suggestionsLoading ? (
+              <li className="suggestion loading"><span className="loader" />Loading...</li>
+            ) : (
+              suggestions.map((s, idx) => (
+                <li
+                  key={s.id}
+                  role="option"
+                  aria-selected={activeIndex === idx}
+                  className={
+                    "suggestion" + (activeIndex === idx ? " active" : "")
+                  }
+                  onMouseDown={(ev) => ev.preventDefault()}
+                  onClick={() => handleSelect(s.label)}
+                >
+                  {s.label}
+                </li>
+              ))
+            )}
           </ul>
         )}
       </div>
-      <button className="btn">Get The Weather</button>
+      <button className="btn" disabled={loading}>{loading ? "Loading..." : "Get The Weather"}</button>
     </form>
   );
 };
